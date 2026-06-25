@@ -1,13 +1,18 @@
 services:
   - type: web
     name: portfolio-backend
-    runtime: java
+    runtime: docker
+    dockerfilePath: ./Dockerfile
     plan: free
-    buildCommand: mvn clean package -DskipTests
-    startCommand: java -jar target/backend-1.0.0.jar
     envVars:
       - key: ADMIN_PASSWORD
         sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: DB_PATH
+        value: /opt/render/project/src/portfolio.db
+      - key: UPLOAD_DIR
+        value: /opt/render/project/src/uploads
     disk:
       name: portfolio-data
       mountPath: /opt/render/project/src
