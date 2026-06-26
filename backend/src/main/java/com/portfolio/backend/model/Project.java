@@ -26,8 +26,13 @@ public class Project {
 
     private String githubUrl;
 
-    // relative path like "/uploads/167123.png", or null if no image
+    // full Cloudinary URL like "https://res.cloudinary.com/xxx/image/upload/...",
+    // or null if no image was uploaded
     private String image;
+
+    // Cloudinary's internal asset id, needed to delete the image later.
+    // Not shown to the frontend - internal bookkeeping only.
+    private String imagePublicId;
 
     private LocalDateTime createdAt;
 
@@ -39,7 +44,7 @@ public class Project {
     public Project() {
     }
 
-    public Project(String name, String role, String year, String description, String website, String githubUrl, String image) {
+    public Project(String name, String role, String year, String description, String website, String githubUrl, String image, String imagePublicId) {
         this.name = name;
         this.role = role;
         this.year = year;
@@ -47,6 +52,7 @@ public class Project {
         this.website = website;
         this.githubUrl = githubUrl;
         this.image = image;
+        this.imagePublicId = imagePublicId;
     }
 
     // --- Getters and setters ---
@@ -113,6 +119,14 @@ public class Project {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getImagePublicId() {
+        return imagePublicId;
+    }
+
+    public void setImagePublicId(String imagePublicId) {
+        this.imagePublicId = imagePublicId;
     }
 
     public LocalDateTime getCreatedAt() {

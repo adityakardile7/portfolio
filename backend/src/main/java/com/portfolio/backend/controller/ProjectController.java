@@ -1,9 +1,10 @@
 package com.portfolio.backend.controller;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.portfolio.backend.dto.ErrorResponse;
 import com.portfolio.backend.model.Project;
 import com.portfolio.backend.repository.ProjectRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -11,21 +12,22 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.*;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/projects")
 public class ProjectController {
 
     private final ProjectRepository projectRepository;
+    private final Cloudinary cloudinary;
 
-    @Value("${app.upload.dir}")
-    private String uploadDir;
+    @org.springframework.beans.factory.annotation.Value("${cloudinary.cloud-name:}")
+    private String cloudinaryCloudName;
 
-    public ProjectController(ProjectRepository projectRepository) {
+    public ProjectController(ProjectRepository projectRepository, Cloudinary cloudinary) {
         this.projectRepository = projectRepository;
+        this.cloudinary = cloudinary;
     }
 
     // GET /api/projects  -> list all projects, newest first
@@ -58,28 +60,43 @@ public class ProjectController {
             return ResponseEntity.badRequest().body(new ErrorResponse("Project name is required"));
         }
 
-        String imagePath = null;
+        String imageUrl = null;
+        String imagePublicId = null;
+
         if (image != null && !image.isEmpty()) {
+            if (cloudinaryCloudName == null || cloudinaryCloudName.isBlank()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new ErrorResponse(
+                                "Image uploads require Cloudinary credentials. " +
+                                "Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and " +
+                                "CLOUDINARY_API_SECRET, or submit the project without an image."));
+            }
             try {
-                imagePath = saveImage(image);
+                @SuppressWarnings("unchecked")
+                Map<String, Object> uploadResult = cloudinary.uploader().upload(
+                        image.getBytes(),
+                        ObjectUtils.asMap("folder", "portfolio-projects")
+                );
+                imageUrl = (String) uploadResult.get("secure_url");
+                imagePublicId = (String) uploadResult.get("public_id");
             } catch (IOException e) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body(new ErrorResponse("Failed to save image: " + e.getMessage()));
+                        .body(new ErrorResponse("Failed to upload image: " + e.getMessage()));
             }
         }
 
-        Project project = new Project(name, role, year, description, website, githubUrl, imagePath);
+        Project project = new Project(name, role, year, description, website, githubUrl, imageUrl, imagePublicId);
         Project saved = projectRepository.save(project);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
-    // DELETE /api/projects/{id} -> remove project + its image file
+    // DELETE /api/projects/{id} -> remove project + its Cloudinary image
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProject(@PathVariable Long id) {
         return projectRepository.findById(id)
                 .<ResponseEntity<?>>map(project -> {
-                    if (project.getImage() != null) {
-                        deleteImageFile(project.getImage());
+                    if (project.getImagePublicId() != null) {
+                        deleteCloudinaryImage(project.getImagePublicId());
                     }
                     projectRepository.deleteById(id);
                     return ResponseEntity.ok(new SuccessResponse(true));
@@ -90,33 +107,11 @@ public class ProjectController {
 
     // ---------- Helpers ----------
 
-    private String saveImage(MultipartFile file) throws IOException {
-        Path uploadPath = Path.of(uploadDir);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
-
-        String originalFilename = file.getOriginalFilename();
-        String extension = "";
-        if (originalFilename != null && originalFilename.contains(".")) {
-            extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-        }
-
-        String filename = UUID.randomUUID() + extension;
-        Path destination = uploadPath.resolve(filename);
-        file.transferTo(destination);
-
-        return "/uploads/" + filename;
-    }
-
-    private void deleteImageFile(String imagePathUrl) {
+    private void deleteCloudinaryImage(String publicId) {
         try {
-            // imagePathUrl looks like "/uploads/xxxx.png" -> strip leading "/uploads/"
-            String filename = imagePathUrl.replaceFirst("^/uploads/", "");
-            Path filePath = Path.of(uploadDir).resolve(filename);
-            Files.deleteIfExists(filePath);
+            cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
         } catch (IOException ignored) {
-            // non-fatal: project record is still deleted even if file cleanup fails
+            // non-fatal: project record is still deleted even if image cleanup fails
         }
     }
 
