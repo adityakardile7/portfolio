@@ -78,7 +78,6 @@ export async function deleteProject(id) {
 
 // Helper to turn a relative image path like "/uploads/xxx.png"
 // into a full URL pointing at the backend.
-export function imageUrl(path) {
-  if (!path) return null;
-  return `${BACKEND_ORIGIN}${path}`;
+export function imageUrl(url) {
+  return url || null;
 }
