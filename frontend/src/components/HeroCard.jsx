@@ -2,7 +2,24 @@
  * The top "intro" card on the Home page — your photo, name, bio, and CTA buttons.
  * Pulled out of Home.jsx so Home only deals with the projects list.
  */
+import profilePhoto from "../asset/profile.png";
 const HeroCard = () => {
+
+    const handleHireMe = () => {
+      const subject = "Job Opportunity / Project Inquiry";
+      const body = 
+        `Hi Aditya,
+        I came across your portfolio and would like to discuss a potential opportunity / project with you.
+        Looking forward to hearing from you.
+        Best regards,`;
+
+      const mailtoUrl = `mailto:adityakardile77@gmail.com?subject=${encodeURIComponent(
+        subject
+      )}&body=${encodeURIComponent(body)}`;
+
+      window.location.href = mailtoUrl;
+    };
+
   return (
     <div className="bg-white rounded-3xl p-8 shadow-sm">
       {/* Top Row */}
@@ -33,7 +50,10 @@ const HeroCard = () => {
 
           {/* Buttons */}
           <div className="flex gap-4 mt-8 flex-wrap">
-            <button className="bg-black text-white px-6 py-3 rounded-xl font-semibold shadow-md">
+            <button
+              onClick={handleHireMe}
+              className="bg-black text-white px-6 py-3 rounded-xl font-semibold shadow-md"
+            >
               Hire Me
             </button>
 
@@ -52,7 +72,7 @@ const HeroCard = () => {
         {/* Right Side Image */}
         <div className="w-44 h-44 rounded-3xl overflow-hidden shadow-lg">
           <img
-            src="https://i.pravatar.cc/300"
+            src={profilePhoto}
             alt="profile"
             className="w-full h-full object-cover"
           />

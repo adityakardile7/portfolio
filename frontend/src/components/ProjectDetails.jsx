@@ -82,35 +82,35 @@ const ProjectDetails = () => {
           <div className="mt-10">
 
             {/* Logo */}
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-violet-700 to-blue-500 flex items-center justify-center text-white text-3xl shadow-lg">
+            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-violet-700 to-blue-500 flex items-center justify-center text-white text-2xl shadow-lg">
               □
             </div>
 
             {/* Title */}
-            <h1 className="text-6xl font-bold text-gray-800 mt-8">
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mt-6">
               {project.name}
             </h1>
 
             {project.role && (
-              <p className="text-gray-500 text-lg mt-3">{project.role}</p>
+              <p className="text-gray-500 text-base mt-2">{project.role}</p>
             )}
 
             {/* Description */}
             {project.description && (
-              <p className="text-gray-500 text-2xl leading-[50px] mt-8">
+              <p className="text-gray-600 text-base leading-7 mt-6 whitespace-pre-line">
                 {project.description}
               </p>
             )}
 
             {/* Buttons */}
             {(project.website || project.githubUrl) && (
-              <div className="flex gap-4 mt-8 flex-wrap">
+              <div className="flex gap-3 mt-6 flex-wrap">
                 {project.website && (
                   <a
                     href={project.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex bg-black text-white px-6 py-4 rounded-xl items-center gap-3 font-semibold shadow-md"
+                    className="inline-flex bg-black text-white px-5 py-3 rounded-xl items-center gap-2 font-semibold text-sm shadow-md"
                   >
                     Visit Website
                     <FiArrowRight />
@@ -122,7 +122,7 @@ const ProjectDetails = () => {
                     href={project.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex border border-gray-200 bg-white text-gray-700 px-6 py-4 rounded-xl items-center gap-3 font-semibold shadow-md"
+                    className="inline-flex border border-gray-200 bg-white text-gray-700 px-5 py-3 rounded-xl items-center gap-2 font-semibold text-sm shadow-md"
                   >
                     <FiGithub />
                     View on GitHub
@@ -134,12 +134,12 @@ const ProjectDetails = () => {
 
           {/* Project Image */}
           {project.image && (
-            <div className="mt-12 flex flex-col gap-6">
+            <div className="mt-10 flex flex-col gap-6">
               <div className="bg-[#F3F4F6] rounded-3xl overflow-hidden">
                 <img
                   src={imageUrl(project.image)}
                   alt={project.name}
-                  className="w-full h-[400px] object-cover"
+                  className="w-full h-[320px] object-cover"
                 />
               </div>
             </div>
