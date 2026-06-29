@@ -23,7 +23,7 @@ const education = [
   },
 ];
 
-const skills = ["Flutter", "Java", "Spring Boot", "SQL", "React"];
+const skills = ["Flutter", "Java", "Spring Boot", "SQL", "React.js"];
 
 const Profile = () => {
   return (
@@ -42,7 +42,7 @@ const Profile = () => {
       {/* Name */}
       <div className="text-center mt-6">
         <h1 className="text-4xl font-bold text-gray-800">Aditya Kardile</h1>
-        <p className="text-gray-500 mt-2 text-lg">Flutter & Java Developer</p>
+        <p className="text-gray-500 mt-2 text-lg">Fullstack Developer</p>
       </div>
 
       {/* Info Card */}

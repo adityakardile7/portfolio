@@ -26,7 +26,7 @@ const HeroCard = () => {
       <div className="flex items-center justify-between">
         <p className="text-gray-500 flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-gray-400"></span>
-          Flutter & Java Developer
+          Fullstack Developer
         </p>
 
         <div className="bg-green-100 text-green-700 px-4 py-1 rounded-full text-sm font-medium">
@@ -43,7 +43,7 @@ const HeroCard = () => {
           </h1>
 
           <p className="text-gray-500 mt-5 text-lg leading-8">
-            Flutter & Java Developer from Pune, India.
+            Fullstack Developer from Pune, India.
             <br />
             Passionate about creating modern applications.
           </p>
