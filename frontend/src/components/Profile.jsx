@@ -1,5 +1,6 @@
 import EducationCard from "./EducationCard";
 import SkillsList from "./SkillsList";
+import profilePhoto from "../asset/profile.png";
 
 const education = [
   {
@@ -30,8 +31,8 @@ const Profile = () => {
       {/* Profile Image */}
       <div className="flex justify-center">
         <div className="w-40 h-40 rounded-full overflow-hidden border-[6px] border-gray-100 shadow-md">
-          <img
-            src="https://i.pravatar.cc/300"
+         <img
+            src={profilePhoto}
             alt="profile"
             className="w-full h-full object-cover"
           />
