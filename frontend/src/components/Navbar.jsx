@@ -57,9 +57,7 @@ const Navbar = () => {
       <button 
       onClick={handleHireMe}
       className="bg-black text-white px-5 py-3 rounded-xl flex items-center gap-2 font-semibold shadow-md">
-         onClick={handleHireMe}
         <IoAddCircleOutline className="text-lg" />
-       
         Hire Me
       </button>
     </div>
